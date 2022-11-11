@@ -1,12 +1,12 @@
 import express, { Express, Request, Response } from 'express'
 import { json } from 'body-parser'
-import dotenv from 'dotenv'
 import expressSession from 'express-session'
 import path from 'path'
 import cors from 'cors'
 
 import authRoutes from './api/auth/authRoutes'
 import userRoutes from './api/user/userRoutes'
+import gameRoutes from './api/game/gameRoutes'
 
 const app: Express = express()
 const http = require('http').createServer(app)
@@ -35,6 +35,7 @@ if (process.env.NODE_ENV === 'production') {
 
 app.use('/api/auth', authRoutes)
 app.use('/api/user', userRoutes)
+app.use('/api/game', gameRoutes)
 
 app.get('/**', (req, res) => {
   res.sendFile(path.join(__dirname, './public', 'index.html'))
@@ -44,5 +45,3 @@ const PORT = 3030
 http.listen(PORT, () => {
   console.log(`⚡️Server is running on port: http://localhost:${PORT}`)
 })
-
-console.log('procces env:', process.env.NODE_ENV)

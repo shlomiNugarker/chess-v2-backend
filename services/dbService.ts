@@ -2,9 +2,7 @@ const MongoClient = require('mongodb').MongoClient
 
 import config from '../config/index'
 
-module.exports = {
-  getCollection,
-}
+export default { getCollection }
 
 const dbName = 'chess_db'
 

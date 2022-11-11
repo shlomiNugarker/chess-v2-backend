@@ -1,5 +1,5 @@
 import authService from './authService'
-import { Request, Response } from 'express'
+import { Request, RequestHandler, Response } from 'express'
 
 export default { login, signup, logout }
 
