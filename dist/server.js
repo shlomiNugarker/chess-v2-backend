@@ -38,7 +38,7 @@ app.use('/api/user', userRoutes_1.default);
 app.use('/api/game', gameRoutes_1.default);
 socketService_1.default.connectSockets(http, session);
 app.get('/**', (req, res) => {
-    res.sendFile(path_1.default.join(__dirname, '../public', 'index.html'));
+    res.sendFile(path_1.default.join(__dirname, 'public', 'index.html'));
 });
 const PORT = 3030;
 http.listen(PORT, () => {
