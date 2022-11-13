@@ -40,7 +40,7 @@ socketService_1.default.connectSockets(http, session);
 app.get('/**', (req, res) => {
     res.sendFile(path_1.default.join(__dirname, 'public', 'index.html'));
 });
-const PORT = 3030;
+const PORT = process.env.PORT || 3030;
 http.listen(PORT, () => {
     console.log(`⚡️Server is running on port: http://localhost:${PORT}`);
 });
