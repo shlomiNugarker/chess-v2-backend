@@ -41,7 +41,7 @@ app.use('/api/game', gameRoutes)
 socketService.connectSockets(http, session)
 
 app.get('/**', (req, res) => {
-  res.sendFile(path.join(__dirname, './public', 'index.html'))
+  res.sendFile(path.join(__dirname, '../public', 'index.html'))
 })
 
 const PORT = 3030
