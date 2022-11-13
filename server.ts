@@ -8,6 +8,8 @@ import authRoutes from './api/auth/authRoutes'
 import userRoutes from './api/user/userRoutes'
 import gameRoutes from './api/game/gameRoutes'
 
+import socketService from './services/socketService'
+
 const app: Express = express()
 const http = require('http').createServer(app)
 
@@ -26,7 +28,6 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.resolve(__dirname, 'public')))
 } else {
   const corsOptions = {
-    // Make sure origin contains the url your frontend is running on
     origin: ['http://127.0.0.1:3000', 'http://localhost:3000'],
     credentials: true,
   }
@@ -36,6 +37,8 @@ if (process.env.NODE_ENV === 'production') {
 app.use('/api/auth', authRoutes)
 app.use('/api/user', userRoutes)
 app.use('/api/game', gameRoutes)
+
+socketService.connectSockets(http, session)
 
 app.get('/**', (req, res) => {
   res.sendFile(path.join(__dirname, './public', 'index.html'))

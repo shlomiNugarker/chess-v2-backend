@@ -1,4 +1,4 @@
-const dbService = require('../../services/dbService')
+import dbService from '../../services/dbService'
 const ObjectId = require('mongodb').ObjectId
 
 export default {
