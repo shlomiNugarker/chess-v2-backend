@@ -19,18 +19,28 @@ function connectSockets(http, session) {
     });
     gIo &&
         gIo.on('connection', (socket) => {
-            console.log('New socket', socket.id);
-            socket.emit('add-connected-users', connectedUsers);
-            socket.on('disconnect', (socket) => {
+            if (connectedUsers && connectedUsers.length)
+                socket.emit('add-connected-users', connectedUsers);
+            socket.on('disconnect', (socket) => __awaiter(this, void 0, void 0, function* () {
                 console.log('Someone disconnected');
-                connectedUsers = connectedUsers.filter((u) => u.userId !== socket.userId);
-            });
+                connectedUsers = connectedUsers.filter((userId) => {
+                    return userId !== socket.userId;
+                });
+                const sockets = yield _getAllSockets();
+                sockets.forEach((socket) => socket.broadcast.emit('add-connected-users', connectedUsers));
+            }));
             socket.on('setUserSocket', (userId) => __awaiter(this, void 0, void 0, function* () {
-                console.log('setUserSocket');
                 socket.userId = userId;
                 if (!connectedUsers.includes(userId))
                     connectedUsers.push(userId);
-                socket.emit('add-connected-users', connectedUsers);
+                // socket.emit('add-connected-users', connectedUsers)
+                const sockets = yield _getAllSockets();
+                sockets.forEach((socket) => socket.broadcast.emit('add-connected-users', connectedUsers));
+            }));
+            socket.on('user-disconnect', (userId) => __awaiter(this, void 0, void 0, function* () {
+                connectedUsers = connectedUsers.filter((userId) => {
+                    return userId !== socket.userId;
+                });
                 const sockets = yield _getAllSockets();
                 sockets.forEach((socket) => socket.broadcast.emit('add-connected-users', connectedUsers));
             }));

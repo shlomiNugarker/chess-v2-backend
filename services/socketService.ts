@@ -11,7 +11,7 @@ let gIo: {
   fetchSockets: () => any
 } | null = null
 
-let connectedUsers: any[] = []
+let connectedUsers: string[] = []
 
 function connectSockets(http: any, session: any) {
   gIo = require('socket.io')(http, {
@@ -21,22 +21,37 @@ function connectSockets(http: any, session: any) {
   })
   gIo &&
     gIo.on('connection', (socket) => {
-      console.log('New socket', socket.id)
+      if (connectedUsers && connectedUsers.length)
+        socket.emit('add-connected-users', connectedUsers)
 
-      socket.emit('add-connected-users', connectedUsers)
-
-      socket.on('disconnect', (socket: any) => {
+      socket.on('disconnect', async (socket: any) => {
         console.log('Someone disconnected')
-        connectedUsers = connectedUsers.filter(
-          (u) => u.userId !== socket.userId
+        connectedUsers = connectedUsers.filter((userId) => {
+          return userId !== socket.userId
+        })
+        const sockets = await _getAllSockets()
+        sockets.forEach(
+          (socket: {
+            broadcast: { emit: (arg0: string, arg1: any[]) => any }
+          }) => socket.broadcast.emit('add-connected-users', connectedUsers)
         )
       })
 
       socket.on('setUserSocket', async (userId: string) => {
-        console.log('setUserSocket')
         socket.userId = userId
         if (!connectedUsers.includes(userId)) connectedUsers.push(userId)
-        socket.emit('add-connected-users', connectedUsers)
+        // socket.emit('add-connected-users', connectedUsers)
+        const sockets = await _getAllSockets()
+        sockets.forEach(
+          (socket: {
+            broadcast: { emit: (arg0: string, arg1: any[]) => any }
+          }) => socket.broadcast.emit('add-connected-users', connectedUsers)
+        )
+      })
+      socket.on('user-disconnect', async (userId: string) => {
+        connectedUsers = connectedUsers.filter((userId) => {
+          return userId !== socket.userId
+        })
         const sockets = await _getAllSockets()
         sockets.forEach(
           (socket: {
