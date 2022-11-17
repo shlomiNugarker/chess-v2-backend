@@ -10,7 +10,6 @@ router.get('/', userController_1.default.getUsers);
 router.get('/:id', userController_1.default.getUser);
 router.put('/:id', userController_1.default.updateUser);
 router.post('/', userController_1.default.addUser);
-router.put('/:id', userController_1.default.updateUser);
 router.delete('/:id', userController_1.default.deleteUser);
 // router.delete('/:id', deleteUser)
 exports.default = router;
