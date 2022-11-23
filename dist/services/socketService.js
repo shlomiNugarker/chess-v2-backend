@@ -15,35 +15,32 @@ function connectSockets(http, session) {
     gIo = require('socket.io')(http, {
         cors: {
             origin: '*',
+            pingTimeout: 60000,
         },
     });
     gIo &&
         gIo.on('connection', (socket) => {
-            if (connectedUsers && connectedUsers.length)
-                socket.emit('add-connected-users', connectedUsers);
-            socket.on('disconnect', (socket) => __awaiter(this, void 0, void 0, function* () {
-                console.log('Someone disconnected');
-                connectedUsers = connectedUsers.filter((userId) => {
-                    return userId !== socket.userId;
-                });
-                const sockets = yield _getAllSockets();
-                sockets.forEach((socket) => socket.broadcast.emit('add-connected-users', connectedUsers));
-            }));
+            console.log({ connectedUsers });
             socket.on('setUserSocket', (userId) => __awaiter(this, void 0, void 0, function* () {
+                console.log('setUserSocket', userId);
                 socket.userId = userId;
                 if (!connectedUsers.includes(userId))
                     connectedUsers.push(userId);
-                // socket.emit('add-connected-users', connectedUsers)
                 const sockets = yield _getAllSockets();
-                sockets.forEach((socket) => socket.broadcast.emit('add-connected-users', connectedUsers));
-            }));
-            socket.on('user-disconnect', (userId) => __awaiter(this, void 0, void 0, function* () {
-                connectedUsers = connectedUsers.filter((userId) => {
-                    return userId !== socket.userId;
+                sockets.forEach((socket) => {
+                    socket.emit('set-connected-users', connectedUsers);
                 });
-                const sockets = yield _getAllSockets();
-                sockets.forEach((socket) => socket.broadcast.emit('add-connected-users', connectedUsers));
             }));
+            // while user logout:
+            socket.on('user-disconnect', (userId) => __awaiter(this, void 0, void 0, function* () {
+                console.log('user disconnected', userId);
+                connectedUsers = connectedUsers.filter((userId) => userId !== socket.userId);
+                const sockets = yield _getAllSockets();
+                sockets.forEach((socket) => {
+                    socket.emit('set-connected-users', connectedUsers);
+                });
+            }));
+            // handle game state:
             socket.on('state-updated', (state) => __awaiter(this, void 0, void 0, function* () {
                 const { players } = state;
                 if (!players)
@@ -57,6 +54,14 @@ function connectSockets(http, session) {
                     type: 'update-state',
                     data: state,
                     userId: players.white,
+                });
+            }));
+            socket.on('disconnect', () => __awaiter(this, void 0, void 0, function* () {
+                // while user close the browser:
+                connectedUsers = connectedUsers.filter((userId) => userId !== socket.userId);
+                const sockets = yield _getAllSockets();
+                sockets.forEach((socket) => {
+                    socket.emit('set-connected-users', connectedUsers);
                 });
             }));
         });
@@ -82,8 +87,8 @@ function emitToUser({ type, data, userId }) {
 }
 // Send to all sockets BUT not the current socket
 function broadcast({ type, data, room = null, userId }) {
-    return __awaiter(this, arguments, void 0, function* () {
-        console.log('BROADCASTING', JSON.stringify(arguments));
+    return __awaiter(this, void 0, void 0, function* () {
+        // console.log('BROADCASTING', JSON.stringify(arguments))
         const excludedSocket = yield _getUserSocket(userId);
         if (!excludedSocket) {
             // _printSockets();

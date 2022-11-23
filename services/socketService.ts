@@ -1,3 +1,4 @@
+import { Socket } from 'socket.io'
 import { GameState } from '../models/GameState'
 
 let gIo: {
@@ -17,49 +18,37 @@ function connectSockets(http: any, session: any) {
   gIo = require('socket.io')(http, {
     cors: {
       origin: '*',
+      pingTimeout: 60000,
     },
   })
   gIo &&
     gIo.on('connection', (socket) => {
-      if (connectedUsers && connectedUsers.length)
-        socket.emit('add-connected-users', connectedUsers)
-
-      socket.on('disconnect', async (socket: any) => {
-        console.log('Someone disconnected')
-        connectedUsers = connectedUsers.filter((userId) => {
-          return userId !== socket.userId
-        })
-        const sockets = await _getAllSockets()
-        sockets.forEach(
-          (socket: {
-            broadcast: { emit: (arg0: string, arg1: any[]) => any }
-          }) => socket.broadcast.emit('add-connected-users', connectedUsers)
-        )
-      })
+      console.log({ connectedUsers })
 
       socket.on('setUserSocket', async (userId: string) => {
+        console.log('setUserSocket', userId)
         socket.userId = userId
         if (!connectedUsers.includes(userId)) connectedUsers.push(userId)
-        // socket.emit('add-connected-users', connectedUsers)
+
         const sockets = await _getAllSockets()
-        sockets.forEach(
-          (socket: {
-            broadcast: { emit: (arg0: string, arg1: any[]) => any }
-          }) => socket.broadcast.emit('add-connected-users', connectedUsers)
-        )
-      })
-      socket.on('user-disconnect', async (userId: string) => {
-        connectedUsers = connectedUsers.filter((userId) => {
-          return userId !== socket.userId
+        sockets.forEach((socket: Socket) => {
+          socket.emit('set-connected-users', connectedUsers)
         })
-        const sockets = await _getAllSockets()
-        sockets.forEach(
-          (socket: {
-            broadcast: { emit: (arg0: string, arg1: any[]) => any }
-          }) => socket.broadcast.emit('add-connected-users', connectedUsers)
-        )
       })
 
+      // while user logout:
+      socket.on('user-disconnect', async (userId: string) => {
+        console.log('user disconnected', userId)
+        connectedUsers = connectedUsers.filter(
+          (userId) => userId !== socket.userId
+        )
+        const sockets = await _getAllSockets()
+        sockets.forEach((socket: Socket) => {
+          socket.emit('set-connected-users', connectedUsers)
+        })
+      })
+
+      // handle game state:
       socket.on('state-updated', async (state: GameState) => {
         const { players } = state
         if (!players) return
@@ -74,6 +63,17 @@ function connectSockets(http: any, session: any) {
           type: 'update-state',
           data: state,
           userId: players.white,
+        })
+      })
+
+      socket.on('disconnect', async () => {
+        // while user close the browser:
+        connectedUsers = connectedUsers.filter(
+          (userId) => userId !== socket.userId
+        )
+        const sockets = await _getAllSockets()
+        sockets.forEach((socket: Socket) => {
+          socket.emit('set-connected-users', connectedUsers)
         })
       })
     })
@@ -96,7 +96,7 @@ async function emitToUser({ type, data, userId }: any) {
 
 // Send to all sockets BUT not the current socket
 async function broadcast({ type, data, room = null, userId }: any) {
-  console.log('BROADCASTING', JSON.stringify(arguments))
+  // console.log('BROADCASTING', JSON.stringify(arguments))
   const excludedSocket = await _getUserSocket(userId)
   if (!excludedSocket) {
     // _printSockets();
