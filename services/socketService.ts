@@ -1,4 +1,5 @@
 import { Socket } from 'socket.io'
+import { Chat } from '../models/Chat'
 import { GameState } from '../models/GameState'
 
 let gIo: {
@@ -23,10 +24,10 @@ function connectSockets(http: any, session: any) {
   })
   gIo &&
     gIo.on('connection', (socket) => {
-      console.log({ connectedUsers })
+      // console.log({ connectedUsers })
 
       socket.on('setUserSocket', async (userId: string) => {
-        console.log('setUserSocket', userId)
+        // console.log('setUserSocket', userId)
         socket.userId = userId
         if (!connectedUsers.includes(userId)) connectedUsers.push(userId)
 
@@ -38,7 +39,7 @@ function connectSockets(http: any, session: any) {
 
       // while user logout:
       socket.on('user-disconnect', async (userId: string) => {
-        console.log('user disconnected', userId)
+        // console.log('user disconnected', userId)
         connectedUsers = connectedUsers.filter(
           (userId) => userId !== socket.userId
         )
@@ -63,6 +64,22 @@ function connectSockets(http: any, session: any) {
           type: 'update-state',
           data: state,
           userId: players.white,
+        })
+      })
+      //
+      socket.on('chat-updated', async (chat: Chat) => {
+        console.log('chat-updated', chat)
+
+        emitToUser({
+          type: 'update-chat',
+          data: chat,
+          userId: chat.userId,
+        })
+
+        emitToUser({
+          type: 'update-chat',
+          data: chat,
+          userId: chat.userId2,
         })
       })
 
@@ -90,7 +107,7 @@ async function emitToUser({ type, data, userId }: any) {
   if (socket) socket.emit(type, data)
   else {
     console.log('User socket not found')
-    _printSockets()
+    // _printSockets()
   }
 }
 

@@ -1,4 +1,8 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = {
+    makeId,
+};
 function makeId(length = 5) {
     var txt = '';
     var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

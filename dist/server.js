@@ -11,6 +11,7 @@ const cors_1 = __importDefault(require("cors"));
 const authRoutes_1 = __importDefault(require("./api/auth/authRoutes"));
 const userRoutes_1 = __importDefault(require("./api/user/userRoutes"));
 const gameRoutes_1 = __importDefault(require("./api/game/gameRoutes"));
+const chatRoutes_1 = __importDefault(require("./api/chat/chatRoutes"));
 const socketService_1 = __importDefault(require("./services/socketService"));
 const app = (0, express_1.default)();
 const http = require('http').createServer(app);
@@ -36,6 +37,7 @@ else {
 app.use('/api/auth', authRoutes_1.default);
 app.use('/api/user', userRoutes_1.default);
 app.use('/api/game', gameRoutes_1.default);
+app.use('/api/chat', chatRoutes_1.default);
 socketService_1.default.connectSockets(http, session);
 app.get('/**', (req, res) => {
     res.sendFile(path_1.default.join(__dirname, 'public', 'index.html'));

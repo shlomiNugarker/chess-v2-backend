@@ -7,6 +7,7 @@ import cors from 'cors'
 import authRoutes from './api/auth/authRoutes'
 import userRoutes from './api/user/userRoutes'
 import gameRoutes from './api/game/gameRoutes'
+import chatRoutes from './api/chat/chatRoutes'
 
 import socketService from './services/socketService'
 
@@ -37,6 +38,7 @@ if (process.env.NODE_ENV === 'production') {
 app.use('/api/auth', authRoutes)
 app.use('/api/user', userRoutes)
 app.use('/api/game', gameRoutes)
+app.use('/api/chat', chatRoutes)
 
 socketService.connectSockets(http, session)
 

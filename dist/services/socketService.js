@@ -20,9 +20,9 @@ function connectSockets(http, session) {
     });
     gIo &&
         gIo.on('connection', (socket) => {
-            console.log({ connectedUsers });
+            // console.log({ connectedUsers })
             socket.on('setUserSocket', (userId) => __awaiter(this, void 0, void 0, function* () {
-                console.log('setUserSocket', userId);
+                // console.log('setUserSocket', userId)
                 socket.userId = userId;
                 if (!connectedUsers.includes(userId))
                     connectedUsers.push(userId);
@@ -33,7 +33,7 @@ function connectSockets(http, session) {
             }));
             // while user logout:
             socket.on('user-disconnect', (userId) => __awaiter(this, void 0, void 0, function* () {
-                console.log('user disconnected', userId);
+                // console.log('user disconnected', userId)
                 connectedUsers = connectedUsers.filter((userId) => userId !== socket.userId);
                 const sockets = yield _getAllSockets();
                 sockets.forEach((socket) => {
@@ -54,6 +54,20 @@ function connectSockets(http, session) {
                     type: 'update-state',
                     data: state,
                     userId: players.white,
+                });
+            }));
+            //
+            socket.on('chat-updated', (chat) => __awaiter(this, void 0, void 0, function* () {
+                console.log('chat-updated', chat);
+                emitToUser({
+                    type: 'update-chat',
+                    data: chat,
+                    userId: chat.userId,
+                });
+                emitToUser({
+                    type: 'update-chat',
+                    data: chat,
+                    userId: chat.userId2,
                 });
             }));
             socket.on('disconnect', () => __awaiter(this, void 0, void 0, function* () {
@@ -81,7 +95,7 @@ function emitToUser({ type, data, userId }) {
             socket.emit(type, data);
         else {
             console.log('User socket not found');
-            _printSockets();
+            // _printSockets()
         }
     });
 }

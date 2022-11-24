@@ -1,3 +1,7 @@
+export default {
+  makeId,
+}
+
 function makeId(length = 5) {
   var txt = ''
   var possible =
