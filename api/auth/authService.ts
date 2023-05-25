@@ -17,8 +17,6 @@ async function login(username: string, password: string) {
 }
 
 async function signup(username: string, password: string, fullname: string) {
-  console.log('signup serivce')
-
   const saltRounds = 10
 
   if (!username || !password || !fullname)

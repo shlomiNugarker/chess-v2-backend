@@ -1,8 +1,11 @@
-import express, { Express, Request, Response } from 'express'
+import express, { Express } from 'express'
 import { json } from 'body-parser'
 import expressSession from 'express-session'
 import path from 'path'
 import cors from 'cors'
+
+import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+dotenv.config()
 
 import authRoutes from './api/auth/authRoutes'
 import userRoutes from './api/user/userRoutes'

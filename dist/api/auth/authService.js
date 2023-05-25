@@ -33,7 +33,6 @@ function login(username, password) {
 }
 function signup(username, password, fullname) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log('signup serivce');
         const saltRounds = 10;
         if (!username || !password || !fullname)
             return Promise.reject('fullname, username and password are required!');
