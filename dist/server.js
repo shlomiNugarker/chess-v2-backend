@@ -22,15 +22,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -79,15 +70,4 @@ app.get('/**', (req, res) => {
 const PORT = process.env.PORT || 3030;
 http.listen(PORT, () => {
     console.log(`⚡️Server is running on port: ${PORT}`);
-    (() => __awaiter(void 0, void 0, void 0, function* () {
-        console.log('dsdf');
-        // const res = await fetch(
-        //   'https://gw.yad2.co.il/feed-search-legacy/products/furniture?category=2&item=320&forceLdLoad=true'
-        // )
-        // const json = await res.json()
-        // console.log(json.data.feed)
-        const res = yield fetch('https://gw.yad2.co.il/feed-search-legacy/products/furniture?category=2&item=320&forceLdLoad=true');
-        const json = yield res.json();
-        // console.log(json.data.feed)
-    }))();
 });
