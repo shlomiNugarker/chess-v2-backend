@@ -58,7 +58,6 @@ function connectSockets(http, session) {
             }));
             //
             socket.on('chat-updated', (chat) => __awaiter(this, void 0, void 0, function* () {
-                console.log('chat-updated', chat);
                 emitToUser({
                     type: 'update-chat',
                     data: chat,

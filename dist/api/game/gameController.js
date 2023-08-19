@@ -36,7 +36,7 @@ function updateState(req, res) {
         }
         catch (err) {
             console.log('Failed to getGameById ' + err);
-            res.status(401).send({ err: 'Failed to Login' });
+            res.status(401).send({ err: 'Failed to updateState' });
         }
     });
 }
@@ -44,12 +44,12 @@ function addState(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const state = req.body;
-            const addedState = yield gameService_1.default.add(state);
-            res.json(addedState);
+            const insertedId = yield gameService_1.default.add(state);
+            res.json(insertedId);
         }
         catch (err) {
-            console.log('Failed to getGameById ' + err);
-            res.status(401).send({ err: 'Failed to Login' });
+            console.log('Failed to add state ' + err);
+            res.status(401).send({ err: 'Failed to add state' });
         }
     });
 }

@@ -68,8 +68,6 @@ function connectSockets(http: any, session: any) {
       })
       //
       socket.on('chat-updated', async (chat: Chat) => {
-        console.log('chat-updated', chat)
-
         emitToUser({
           type: 'update-chat',
           data: chat,

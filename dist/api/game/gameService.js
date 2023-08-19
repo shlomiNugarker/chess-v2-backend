@@ -37,8 +37,8 @@ function add(state) {
         try {
             const stateToAdd = Object.assign(Object.assign({}, state), { createdAt: new Date().getTime() });
             const collection = yield dbService_1.default.getCollection('game');
-            yield collection.insertOne(stateToAdd);
-            return stateToAdd;
+            const { insertedId } = yield collection.insertOne(stateToAdd);
+            return insertedId;
         }
         catch (err) {
             console.log(`cant add state `, err);

@@ -37,8 +37,8 @@ function add(chat) {
         try {
             const chatToAdd = Object.assign({}, chat);
             const collection = yield dbService_1.default.getCollection('chat');
-            yield collection.insertOne(chatToAdd);
-            return chatToAdd;
+            const { insertedId } = yield collection.insertOne(chatToAdd);
+            return insertedId;
         }
         catch (err) {
             console.log(err);

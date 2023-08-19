@@ -37,8 +37,8 @@ function addChat(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const chat = req.body;
-            const addedChat = yield chatService_1.default.add(chat);
-            res.json(addedChat);
+            const insertedId = yield chatService_1.default.add(chat);
+            res.json(insertedId);
         }
         catch (err) {
             console.log(err);
