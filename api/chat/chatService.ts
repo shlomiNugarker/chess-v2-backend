@@ -21,12 +21,12 @@ async function getById(chatId: string) {
   }
 }
 
-async function add(chat: any) {
+async function add(chat: any): Promise<string> {
   try {
     const chatToAdd = { ...chat }
     const collection = await dbService.getCollection('chat')
-    await collection.insertOne(chatToAdd)
-    return chatToAdd
+    const { insertedId } = await collection.insertOne(chatToAdd)
+    return insertedId
   } catch (err) {
     console.log(err)
     throw err

@@ -19,12 +19,12 @@ async function getById(stateId: string) {
   }
 }
 
-async function add(state: GameState) {
+async function add(state: GameState): Promise<string> {
   try {
     const stateToAdd = { ...state, createdAt: new Date().getTime() }
     const collection = await dbService.getCollection('game')
-    await collection.insertOne(stateToAdd)
-    return stateToAdd
+    const { insertedId } = await collection.insertOne(stateToAdd)
+    return insertedId
   } catch (err) {
     console.log(`cant add state `, err)
     throw err

@@ -23,8 +23,8 @@ async function getChatById(req: Request, res: Response) {
 async function addChat(req: Request, res: Response) {
   try {
     const chat = req.body
-    const addedChat = await chatService.add(chat)
-    res.json(addedChat)
+    const insertedId = await chatService.add(chat)
+    res.json(insertedId)
   } catch (err) {
     console.log(err)
     res.status(500).send({ err: 'Failed to add chat' })

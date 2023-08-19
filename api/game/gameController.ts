@@ -21,17 +21,17 @@ async function updateState(req: Request, res: Response) {
     res.json(addedGame)
   } catch (err) {
     console.log('Failed to getGameById ' + err)
-    res.status(401).send({ err: 'Failed to Login' })
+    res.status(401).send({ err: 'Failed to updateState' })
   }
 }
 
 async function addState(req: Request, res: Response) {
   try {
     const state = req.body
-    const addedState = await gameService.add(state)
-    res.json(addedState)
+    const insertedId = await gameService.add(state)
+    res.json(insertedId)
   } catch (err) {
-    console.log('Failed to getGameById ' + err)
-    res.status(401).send({ err: 'Failed to Login' })
+    console.log('Failed to add state ' + err)
+    res.status(401).send({ err: 'Failed to add state' })
   }
 }
