@@ -32,8 +32,8 @@ function connectSockets(http: any, session: any) {
         if (!connectedUsers.includes(userId)) connectedUsers.push(userId)
 
         const sockets = await _getAllSockets()
-        sockets.forEach((socket: Socket) => {
-          socket.emit('set-connected-users', connectedUsers)
+        sockets.forEach((s: Socket) => {
+          if (socket.id !== s.id) s.emit('set-connected-users', connectedUsers)
         })
       })
 
@@ -44,8 +44,8 @@ function connectSockets(http: any, session: any) {
           (userId) => userId !== socket.userId
         )
         const sockets = await _getAllSockets()
-        sockets.forEach((socket: Socket) => {
-          socket.emit('set-connected-users', connectedUsers)
+        sockets.forEach((s: Socket) => {
+          if (socket.id !== s.id) s.emit('set-connected-users', connectedUsers)
         })
       })
 
@@ -87,8 +87,8 @@ function connectSockets(http: any, session: any) {
           (userId) => userId !== socket.userId
         )
         const sockets = await _getAllSockets()
-        sockets.forEach((socket: Socket) => {
-          socket.emit('set-connected-users', connectedUsers)
+        sockets.forEach((s: Socket) => {
+          if (socket.id !== s.id) s.emit('set-connected-users', connectedUsers)
         })
       })
     })

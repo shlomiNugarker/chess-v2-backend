@@ -27,8 +27,9 @@ function connectSockets(http, session) {
                 if (!connectedUsers.includes(userId))
                     connectedUsers.push(userId);
                 const sockets = yield _getAllSockets();
-                sockets.forEach((socket) => {
-                    socket.emit('set-connected-users', connectedUsers);
+                sockets.forEach((s) => {
+                    if (socket.id !== s.id)
+                        s.emit('set-connected-users', connectedUsers);
                 });
             }));
             // while user logout:
@@ -36,8 +37,9 @@ function connectSockets(http, session) {
                 // console.log('user disconnected', userId)
                 connectedUsers = connectedUsers.filter((userId) => userId !== socket.userId);
                 const sockets = yield _getAllSockets();
-                sockets.forEach((socket) => {
-                    socket.emit('set-connected-users', connectedUsers);
+                sockets.forEach((s) => {
+                    if (socket.id !== s.id)
+                        s.emit('set-connected-users', connectedUsers);
                 });
             }));
             // handle game state:
@@ -73,8 +75,9 @@ function connectSockets(http, session) {
                 // while user close the browser:
                 connectedUsers = connectedUsers.filter((userId) => userId !== socket.userId);
                 const sockets = yield _getAllSockets();
-                sockets.forEach((socket) => {
-                    socket.emit('set-connected-users', connectedUsers);
+                sockets.forEach((s) => {
+                    if (socket.id !== s.id)
+                        s.emit('set-connected-users', connectedUsers);
                 });
             }));
         });
