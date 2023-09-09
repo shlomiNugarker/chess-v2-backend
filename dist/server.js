@@ -31,7 +31,7 @@ const body_parser_1 = require("body-parser");
 const express_session_1 = __importDefault(require("express-session"));
 const path_1 = __importDefault(require("path"));
 const cors_1 = __importDefault(require("cors"));
-const dotenv = __importStar(require("dotenv")); // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+const dotenv = __importStar(require("dotenv"));
 dotenv.config();
 const authRoutes_1 = __importDefault(require("./api/auth/authRoutes"));
 const userRoutes_1 = __importDefault(require("./api/user/userRoutes"));

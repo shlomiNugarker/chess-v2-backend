@@ -46,7 +46,7 @@ function signup(req, res) {
 function logout(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            req.session.destroy((err) => console.log()); // ?
+            req.session.destroy((err) => console.log(err)); // ?
             res.send({ msg: 'Logged out successfully' });
         }
         catch (err) {

@@ -4,7 +4,7 @@ import expressSession from 'express-session'
 import path from 'path'
 import cors from 'cors'
 
-import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+import * as dotenv from 'dotenv'
 dotenv.config()
 
 import authRoutes from './api/auth/authRoutes'
