@@ -134,16 +134,14 @@ function _getAllSockets() {
         return sockets;
     });
 }
-function _printSockets() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const sockets = yield _getAllSockets();
-        console.log(`Sockets: (count: ${sockets.length}):`);
-        sockets.forEach(_printSocket);
-    });
-}
-function _printSocket(socket) {
-    console.log(`Socket - socketId: ${socket.id} userId: ${socket.userId}`);
-}
+// async function _printSockets() {
+//   const sockets = await _getAllSockets()
+//   console.log(`Sockets: (count: ${sockets.length}):`)
+//   sockets.forEach(_printSocket)
+// }
+// function _printSocket(socket: any) {
+//   console.log(`Socket - socketId: ${socket.id} userId: ${socket.userId}`)
+// }
 exports.default = {
     connectSockets,
     emitTo,

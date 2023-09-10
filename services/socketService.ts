@@ -137,14 +137,14 @@ async function _getAllSockets() {
   return sockets
 }
 
-async function _printSockets() {
-  const sockets = await _getAllSockets()
-  console.log(`Sockets: (count: ${sockets.length}):`)
-  sockets.forEach(_printSocket)
-}
-function _printSocket(socket: any) {
-  console.log(`Socket - socketId: ${socket.id} userId: ${socket.userId}`)
-}
+// async function _printSockets() {
+//   const sockets = await _getAllSockets()
+//   console.log(`Sockets: (count: ${sockets.length}):`)
+//   sockets.forEach(_printSocket)
+// }
+// function _printSocket(socket: any) {
+//   console.log(`Socket - socketId: ${socket.id} userId: ${socket.userId}`)
+// }
 
 export default {
   connectSockets,
