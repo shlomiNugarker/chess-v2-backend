@@ -69,8 +69,7 @@ function connectSockets(http, session) {
                 connectedUsers = connectedUsers.filter((userId) => userId !== socket.userId);
                 const sockets = yield _getAllSockets();
                 sockets.forEach((s) => {
-                    if (socket.id !== s.id)
-                        s.emit("set-connected-users", connectedUsers);
+                    s.emit("set-connected-users", connectedUsers);
                 });
             }));
         });
