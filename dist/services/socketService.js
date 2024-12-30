@@ -12,72 +12,65 @@ Object.defineProperty(exports, "__esModule", { value: true });
 let gIo = null;
 let connectedUsers = [];
 function connectSockets(http, session) {
-    gIo = require('socket.io')(http, {
+    gIo = require("socket.io")(http, {
         cors: {
-            origin: '*',
+            origin: "*",
             pingTimeout: 60000,
         },
     });
     gIo &&
-        gIo.on('connection', (socket) => {
-            // console.log({ connectedUsers })
-            socket.on('setUserSocket', (userId) => __awaiter(this, void 0, void 0, function* () {
-                // console.log('setUserSocket', userId)
+        gIo.on("connection", (socket) => {
+            socket.on("setUserSocket", (userId) => __awaiter(this, void 0, void 0, function* () {
                 socket.userId = userId;
                 if (!connectedUsers.includes(userId))
                     connectedUsers.push(userId);
                 const sockets = yield _getAllSockets();
                 sockets.forEach((s) => {
-                    if (socket.id !== s.id)
-                        s.emit('set-connected-users', connectedUsers);
+                    s.emit("set-connected-users", connectedUsers);
                 });
             }));
-            // while user logout:
-            socket.on('user-disconnect', (userId) => __awaiter(this, void 0, void 0, function* () {
-                // console.log('user disconnected', userId)
+            socket.on("user-disconnect", (userId) => __awaiter(this, void 0, void 0, function* () {
                 connectedUsers = connectedUsers.filter((userId) => userId !== socket.userId);
                 const sockets = yield _getAllSockets();
                 sockets.forEach((s) => {
                     if (socket.id !== s.id)
-                        s.emit('set-connected-users', connectedUsers);
+                        s.emit("set-connected-users", connectedUsers);
                 });
             }));
-            // handle game state:
-            socket.on('state-updated', (state) => __awaiter(this, void 0, void 0, function* () {
+            socket.on("state-updated", (state) => __awaiter(this, void 0, void 0, function* () {
                 const { players } = state;
                 if (!players)
                     return;
                 emitToUser({
-                    type: 'update-state',
+                    type: "update-state",
                     data: state,
                     userId: players.black,
                 });
                 emitToUser({
-                    type: 'update-state',
+                    type: "update-state",
                     data: state,
                     userId: players.white,
                 });
             }));
             //
-            socket.on('chat-updated', (chat) => __awaiter(this, void 0, void 0, function* () {
+            socket.on("chat-updated", (chat) => __awaiter(this, void 0, void 0, function* () {
                 emitToUser({
-                    type: 'update-chat',
+                    type: "update-chat",
                     data: chat,
                     userId: chat.userId,
                 });
                 emitToUser({
-                    type: 'update-chat',
+                    type: "update-chat",
                     data: chat,
                     userId: chat.userId2,
                 });
             }));
-            socket.on('disconnect', () => __awaiter(this, void 0, void 0, function* () {
-                // while user close the browser:
+            socket.on("disconnect", () => __awaiter(this, void 0, void 0, function* () {
                 connectedUsers = connectedUsers.filter((userId) => userId !== socket.userId);
                 const sockets = yield _getAllSockets();
                 sockets.forEach((s) => {
                     if (socket.id !== s.id)
-                        s.emit('set-connected-users', connectedUsers);
+                        s.emit("set-connected-users", connectedUsers);
                 });
             }));
         });
@@ -86,7 +79,7 @@ function emitTo({ type, data, label }) {
     if (!gIo)
         return;
     if (label)
-        gIo.to('watching:' + label).emit(type, data);
+        gIo.to("watching:" + label).emit(type, data);
     else
         gIo.emit(type, data);
 }
@@ -96,18 +89,14 @@ function emitToUser({ type, data, userId }) {
         if (socket)
             socket.emit(type, data);
         else {
-            console.log('User socket not found');
-            // _printSockets()
+            console.log("User socket not found");
         }
     });
 }
-// Send to all sockets BUT not the current socket
 function broadcast({ type, data, room = null, userId }) {
     return __awaiter(this, void 0, void 0, function* () {
-        // console.log('BROADCASTING', JSON.stringify(arguments))
         const excludedSocket = yield _getUserSocket(userId);
         if (!excludedSocket) {
-            // _printSockets();
             return;
         }
         if (room) {
@@ -127,21 +116,12 @@ function _getUserSocket(userId) {
 }
 function _getAllSockets() {
     return __awaiter(this, void 0, void 0, function* () {
-        // return all Socket instances
         if (!gIo)
             return;
         const sockets = yield gIo.fetchSockets();
         return sockets;
     });
 }
-// async function _printSockets() {
-//   const sockets = await _getAllSockets()
-//   console.log(`Sockets: (count: ${sockets.length}):`)
-//   sockets.forEach(_printSocket)
-// }
-// function _printSocket(socket: any) {
-//   console.log(`Socket - socketId: ${socket.id} userId: ${socket.userId}`)
-// }
 exports.default = {
     connectSockets,
     emitTo,
